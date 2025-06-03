@@ -1,11 +1,21 @@
+import React, { useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
-import { useCallback } from 'react';
+import DraggableTag from './components/DraggableTag'; // Custom component, see below
 
-// Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
+
+const TAGS = [
+  { label: 'balance', x: 0, y: -150 },
+  { label: 'income', x: -150, y: -90 },
+  { label: 'expenses', x: 130, y: -90 },
+  { label: 'fun', x: -180, y: -20 },
+  { label: 'food', x: 160, y: -20 },
+  { label: 'retire', x: -150, y: 50 },
+  { label: 'travel', x: 130, y: 50 },
+];
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -14,32 +24,35 @@ export default function App() {
     Poppins_400Regular,
   });
 
-  // Hide the splash screen once fonts are loaded
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
 
-  // Don't render anything until fonts are loaded
   if (!fontsLoaded && !fontError) {
     return null;
   }
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <Image 
-        source={require('./assets/main.png')} 
-        style={styles.logo} 
-        resizeMode="contain"
-      />
+      <View style={styles.illustrationContainer}>
+        <Image
+          source={require('./assets/main.png')} // Replace with your avatar outline image
+          style={styles.avatar}
+          resizeMode="contain"
+        />
+        {TAGS.map((tag, idx) => (
+          <DraggableTag
+            key={tag.label}
+            label={tag.label}
+            initialPosition={{ x: tag.x, y: tag.y }}
+          />
+        ))}
+      </View>
       <Text style={styles.appName}>Finbound</Text>
-      <ActivityIndicator 
-        size={70} 
-        color="#fff" 
-        style={styles.spinner}
-      />
-      <StatusBar style="light" />
+      <Text style={styles.tagline}>your minimal budgeting app</Text>
+      <StatusBar style="dark" />
     </View>
   );
 }
@@ -47,28 +60,36 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#615efa',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
-    tintColor: '#fff',
+  illustrationContainer: {
+    width: 300,
+    height: 320,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 30,
+  },
+  avatar: {
+    width: 180,
+    height: 220,
+    position: 'absolute',
+    top: 40,
+    left: 60,
+    opacity: 0.95,
   },
   appName: {
     fontSize: 38,
     fontFamily: 'Poppins_700Bold',
-    color: '#fff',
-    marginBottom: 60,
+    color: '#232323',
     letterSpacing: 1,
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
+    marginBottom: 8,
   },
-  spinner: {
-    position: 'absolute',
-    bottom: 80,
+  tagline: {
+    fontSize: 16,
+    fontFamily: 'Poppins_400Regular',
+    color: '#777',
+    marginBottom: 0,
   },
 });
