@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
-import DraggableTag from './components/DraggableTag'; // Custom component, see below
+import DraggableTag from './components/DraggableTag';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,11 +38,11 @@ export default function App() {
     <View style={styles.container} onLayout={onLayoutRootView}>
       <View style={styles.illustrationContainer}>
         <Image
-          source={require('./assets/main.png')} // Replace with your avatar outline image
+          source={require('./assets/main.png')}
           style={styles.avatar}
           resizeMode="contain"
         />
-        {TAGS.map((tag, idx) => (
+        {TAGS.map((tag) => (
           <DraggableTag
             key={tag.label}
             label={tag.label}
@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
     left: 60,
     opacity: 0.95,
   },
-  appName: {
-    fontSize: 38,
-    fontFamily: 'Poppins_700Bold',
-    color: '#232323',
-    letterSpacing: 1,
-    marginBottom: 8,
-  },
+appName: {
+  fontSize: 48,
+  fontFamily: 'Poppins_700Bold',
+  color: '#232323',
+  letterSpacing: 1.5,
+  marginBottom: 8,
+},
   tagline: {
     fontSize: 16,
     fontFamily: 'Poppins_400Regular',
