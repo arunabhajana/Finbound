@@ -1,95 +1,19 @@
-import React, { useCallback } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular } from '@expo-google-fonts/poppins';
-import * as SplashScreen from 'expo-splash-screen';
-import DraggableTag from './components/DraggableTag';
+// App.js
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import SplashScreen from './screens/SplashScreen'; // Your splash screen component
+import HomeScreen from './screens/Homescreen';    // Your home screen component
 
-SplashScreen.preventAutoHideAsync();
-
-const TAGS = [
-  { label: 'balance', x: 0, y: -150 },
-  { label: 'income', x: -150, y: -90 },
-  { label: 'expenses', x: 130, y: -90 },
-  { label: 'fun', x: -180, y: -20 },
-  { label: 'food', x: 160, y: -20 },
-  { label: 'retire', x: -150, y: 50 },
-  { label: 'travel', x: 130, y: 50 },
-];
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [fontsLoaded, fontError] = useFonts({
-    Poppins_700Bold,
-    Poppins_600SemiBold,
-    Poppins_400Regular,
-  });
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
-
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <View style={styles.illustrationContainer}>
-        <Image
-          source={require('./assets/main.png')}
-          style={styles.avatar}
-          resizeMode="contain"
-        />
-        {TAGS.map((tag) => (
-          <DraggableTag
-            key={tag.label}
-            label={tag.label}
-            initialPosition={{ x: tag.x, y: tag.y }}
-          />
-        ))}
-      </View>
-      <Text style={styles.appName}>Finbound</Text>
-      <Text style={styles.tagline}>your minimal budgeting app</Text>
-      <StatusBar style="dark" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Splash" component={SplashScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  illustrationContainer: {
-    width: 300,
-    height: 320,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 30,
-  },
-  avatar: {
-    width: 180,
-    height: 220,
-    position: 'absolute',
-    top: 40,
-    left: 60,
-    opacity: 0.95,
-  },
-appName: {
-  fontSize: 48,
-  fontFamily: 'Poppins_700Bold',
-  color: '#232323',
-  letterSpacing: 1.5,
-  marginBottom: 8,
-},
-  tagline: {
-    fontSize: 16,
-    fontFamily: 'Poppins_400Regular',
-    color: '#777',
-    marginBottom: 0,
-  },
-});
