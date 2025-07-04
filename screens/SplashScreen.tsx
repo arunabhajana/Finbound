@@ -36,7 +36,7 @@ export default function SplashScreenComponent({ navigation }) {
 
   // Handler for button press
   const handleGetStarted = () => {
-    navigation.replace('Login');
+    navigation.replace('Home');
   };
 
   return (

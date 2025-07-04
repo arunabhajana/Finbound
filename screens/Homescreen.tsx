@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import Svg, { Path, Circle } from 'react-native-svg';
-import Icon from 'react-native-vector-icons/Feather'; // For navbar
-import FAIcon from 'react-native-vector-icons/FontAwesome'; // For search
+import Icon from 'react-native-vector-icons/Feather';
+import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 const months = [
   'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
