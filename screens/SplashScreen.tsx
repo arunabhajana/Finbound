@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
 import DraggableTag from '../components/DraggableTag';
@@ -30,19 +30,14 @@ export default function SplashScreenComponent({ navigation }) {
     }
   }, [fontsLoaded, fontError]);
 
-  // Navigate after 5 seconds
-  useEffect(() => {
-    if (fontsLoaded) {
-      const timer = setTimeout(() => {
-        navigation.replace('Home');
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [fontsLoaded, navigation]);
-
   if (!fontsLoaded && !fontError) {
     return null;
   }
+
+  // Handler for button press
+  const handleGetStarted = () => {
+    navigation.replace('Login');
+  };
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
@@ -62,6 +57,9 @@ export default function SplashScreenComponent({ navigation }) {
       </View>
       <Text style={styles.appName}>Finbound</Text>
       <Text style={styles.tagline}>your minimal budgeting app</Text>
+      <TouchableOpacity style={styles.button} onPress={handleGetStarted} activeOpacity={0.85}>
+        <Text style={styles.buttonText}>Get Started</Text>
+      </TouchableOpacity>
       <StatusBar style="dark" />
     </View>
   );
@@ -100,6 +98,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Poppins_400Regular',
     color: '#777',
-    marginBottom: 0,
+    marginBottom: 24,
+  },
+  button: {
+    marginTop: 10,
+    backgroundColor: '#232323',
+    paddingVertical: 14,
+    paddingHorizontal: 48,
+    borderRadius: 28,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.09,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 18,
+    letterSpacing: 1,
   },
 });
+

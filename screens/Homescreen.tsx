@@ -1,72 +1,122 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Ionicons, Feather, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
 import Svg, { Path, Circle } from 'react-native-svg';
+import Icon from 'react-native-vector-icons/Feather'; // For navbar
+import FAIcon from 'react-native-vector-icons/FontAwesome'; // For search
 
-const months = ['jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-const currentMonth = 'oct';
+const months = [
+  'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
+];
 
-const transactions = [
+const dropdownMonths = [
+  { label: 'this month', value: 'this month' },
+  { label: 'jan', value: 'jan' },
+  { label: 'feb', value: 'feb' },
+  { label: 'mar', value: 'mar' },
+  { label: 'apr', value: 'apr' },
+  { label: 'may', value: 'may' },
+  { label: 'jun', value: 'jun' },
+  { label: 'jul', value: 'jul' },
+  { label: 'aug', value: 'aug' },
+  { label: 'sep', value: 'sep' },
+  { label: 'oct', value: 'oct' },
+  { label: 'nov', value: 'nov' },
+  { label: 'dec', value: 'dec' },
+];
+
+const expenses = [
   {
     id: '1',
-    icon: 'dog',
-    emoji: '🐶',
-    title: 'pet care',
-    subtitle: 'petco',
-    amount: -179.99,
+    icon: '🐶',
+    category: 'pet care',
+    merchant: 'petco',
+    amount: 179.99,
   },
   {
     id: '2',
-    icon: 'coffee',
-    emoji: '☕️',
-    title: 'coffee',
-    subtitle: 'starbucks',
-    amount: -8.95,
+    icon: '☕️',
+    category: 'coffee',
+    merchant: 'starbucks',
+    amount: 8.95,
   },
   {
     id: '3',
-    icon: 'tools',
-    emoji: '🛠️',
-    title: 'house repair',
-    subtitle: 'jude contractor',
-    amount: -75.0,
+    icon: '🛠️',
+    category: 'house repair',
+    merchant: 'jude contractor',
+    amount: 75.00,
   },
   {
     id: '4',
-    icon: 'taxi',
-    emoji: '🚕',
-    title: 'commute',
-    subtitle: 'uber',
-    amount: -15.0,
+    icon: '🚕',
+    category: 'commute',
+    merchant: 'uber',
+    amount: 15.00,
   },
 ];
 
 export default function HomeScreen() {
+  const [selectedMonth, setSelectedMonth] = useState(dropdownMonths[0]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const [fontsLoaded] = useFonts({
+    Poppins_700Bold,
+    Poppins_400Regular,
+  });
+
+  if (!fontsLoaded) return null;
+
   return (
     <View style={styles.container}>
-      {/* Top Bar */}
+      {/* Dropdown and Search */}
       <View style={styles.topBar}>
-        <TouchableOpacity style={styles.monthSelector}>
-          <Text style={styles.monthSelectorText}>this month</Text>
-          <Feather name="chevron-down" size={18} color="#222" />
+        <TouchableOpacity
+          style={styles.dropdown}
+          onPress={() => setDropdownOpen(!dropdownOpen)}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.dropdownText}>{selectedMonth.label}</Text>
+          <Icon name={dropdownOpen ? "chevron-up" : "chevron-down"} size={18} color="#232323" style={{ marginLeft: 6 }} />
         </TouchableOpacity>
-        <Feather name="search" size={22} color="#222" />
+        <TouchableOpacity style={styles.searchIcon} activeOpacity={0.7}>
+          <FAIcon name="search" size={22} color="#232323" />
+        </TouchableOpacity>
       </View>
+      {dropdownOpen && (
+        <View style={styles.dropdownList}>
+          {dropdownMonths.map((month) => (
+            <TouchableOpacity
+              key={month.value}
+              onPress={() => {
+                setSelectedMonth(month);
+                setDropdownOpen(false);
+              }}
+              style={styles.dropdownItem}
+            >
+              <Text style={[
+                styles.dropdownText,
+                month.value === selectedMonth.value && { fontWeight: '700', color: '#232323' }
+              ]}>{month.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
-      {/* Balance */}
-      <Text style={styles.balance}>$301.95</Text>
+      {/* Amount */}
+      <Text style={styles.amount}>$301.95</Text>
 
-      {/* Chart */}
-      <View style={styles.chartWrapper}>
-        <Svg height="80" width="100%" viewBox="0 0 320 80">
+      {/* Graph */}
+      <View style={styles.graphContainer}>
+        <Svg width="100%" height="110" viewBox="0 0 320 110">
           <Path
-            d="M0,70 Q40,10 80,40 Q120,70 160,40 Q200,10 240,40 Q280,70 320,40"
-            stroke="#111"
+            d="M0,90 Q40,20 80,70 Q120,110 160,60 Q200,20 240,60 Q280,110 320,90"
+            stroke="#232323"
             strokeWidth="3"
             fill="none"
           />
-          {/* Circle at current month */}
-          <Circle cx="160" cy="40" r="10" fill="#fff" stroke="#111" strokeWidth="3" />
+          {/* Highlight circle for current month */}
+          <Circle cx="160" cy="60" r="13" fill="#fff" stroke="#232323" strokeWidth="3" />
         </Svg>
       </View>
 
@@ -76,8 +126,8 @@ export default function HomeScreen() {
           <Text
             key={m}
             style={[
-              styles.monthText,
-              m === currentMonth && styles.monthTextActive,
+              styles.monthLabel,
+              m === 'oct' && styles.monthLabelActive
             ]}
           >
             {m}
@@ -85,192 +135,224 @@ export default function HomeScreen() {
         ))}
       </View>
 
-      {/* Today's Summary */}
-      <View style={styles.todayRow}>
-        <Text style={styles.todayText}>today</Text>
-        <Text style={styles.todayAmount}>-${308.89.toFixed(2)}</Text>
-      </View>
-      <View style={styles.divider} />
-
-      {/* Transactions List */}
+      {/* Expenses */}
       <FlatList
-        data={transactions}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.transactionRow}>
-            <Text style={styles.emoji}>{item.emoji}</Text>
-            <View style={styles.transactionText}>
-              <Text style={styles.transactionTitle}>{item.title}</Text>
-              <Text style={styles.transactionSubtitle}>{item.subtitle}</Text>
+        style={{ flex: 1, width: '100%' }}
+        data={expenses}
+        keyExtractor={item => item.id}
+        ListHeaderComponent={
+          <>
+            <View style={styles.expenseHeader}>
+              <Text style={styles.expenseHeaderText}>today</Text>
+              <Text style={styles.expenseHeaderText}>-${308.89.toFixed(2)}</Text>
             </View>
-            <Text style={styles.transactionAmount}>
-              {item.amount < 0 ? '-' : '+'}${Math.abs(item.amount).toFixed(2)}
-            </Text>
+            <View style={styles.divider} />
+          </>
+        }
+        renderItem={({ item }) => (
+          <View style={styles.expenseRow}>
+            <Text style={styles.expenseIcon}>{item.icon}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.expenseCategory}>{item.category}</Text>
+              <Text style={styles.expenseMerchant}>{item.merchant}</Text>
+            </View>
+            <Text style={styles.expenseAmount}>-${item.amount.toFixed(2)}</Text>
           </View>
         )}
-        contentContainerStyle={{ paddingBottom: 80 }}
-        showsVerticalScrollIndicator={false}
       />
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity>
-          <Ionicons name="home-outline" size={24} color="#222" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Feather name="bar-chart-2" size={24} color="#222" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.addButton}>
-          <Feather name="plus" size={28} color="#fff" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Feather name="file-text" size={24} color="#222" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Feather name="settings" size={24} color="#222" />
-        </TouchableOpacity>
+        <Icon name="home" size={28} color="#232323" />
+        <Icon name="shopping-bag" size={28} color="#232323" />
+        <View style={styles.plusButton}>
+          <Icon name="plus" size={30} color="#fff" />
+        </View>
+        <Icon name="bar-chart-2" size={28} color="#232323" />
+        <Icon name="settings" size={28} color="#232323" />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingTop: 60, paddingHorizontal: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: 64,
+    alignItems: 'center',
+  },
   topBar: {
+    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  monthSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fafafa',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#eee',
-  },
-  monthSelectorText: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginRight: 6,
-    color: '#222',
-  },
-  balance: {
-    fontSize: 44,
-    fontWeight: '700',
-    color: '#111',
-    textAlign: 'center',
-    marginVertical: 8,
-    letterSpacing: 1,
-  },
-  chartWrapper: {
-    alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 8,
+    alignItems: 'center',
+    marginBottom: 18,
+    marginTop: 50,
+    zIndex: 10,
   },
-  monthsRow: {
+  dropdown: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 12,
-    paddingHorizontal: 8,
+    alignItems: 'center',
+    backgroundColor: '#f7f7f7',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 22,
+    borderWidth: 1.5,
+    borderColor: '#eaeaea',
+    minWidth: 150,
+    justifyContent: 'center',
+    marginRight: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 4,
   },
-  monthText: {
-    fontSize: 15,
-    color: '#bbb',
-    fontWeight: '500',
+  dropdownText: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 17,
+    color: '#232323',
     textTransform: 'lowercase',
   },
-  monthTextActive: {
-    color: '#111',
-    fontWeight: '700',
-    textDecorationLine: 'underline',
+  searchIcon: {
+    // No background, no border, just the icon
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 0,
+    padding: 0,
   },
-  todayRow: {
+  dropdownList: {
+    position: 'absolute',
+    top: 105,
+    left: '25%',
+    width: '50%',
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    zIndex: 20,
+    borderWidth: 1,
+    borderColor: '#eaeaea',
+  },
+  dropdownItem: {
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f1f1f1',
+  },
+  amount: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 48,
+    color: '#232323',
+    marginVertical: 8,
+    textAlign: 'center',
+  },
+  graphContainer: {
+    width: '92%',
+    height: 110,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  monthsRow: {
+    width: '92%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 4,
-    marginBottom: 4,
-    paddingHorizontal: 2,
+    marginVertical: 8,
+    marginBottom: 12,
   },
-  todayText: {
-    fontSize: 15,
-    color: '#888',
-    fontWeight: '500',
+  monthLabel: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 16,
+    color: '#bdbdbd',
+    textTransform: 'lowercase',
   },
-  todayAmount: {
+  monthLabelActive: {
+    color: '#232323',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
+  expenseHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    marginTop: 8,
+    marginBottom: 2,
+  },
+  expenseHeaderText: {
+    fontFamily: 'Poppins_400Regular',
     fontSize: 15,
-    color: '#888',
-    fontWeight: '500',
+    color: '#bdbdbd',
   },
   divider: {
     height: 1,
-    backgroundColor: '#eee',
-    marginVertical: 6,
+    backgroundColor: '#eaeaea',
+    marginHorizontal: 24,
+    marginBottom: 2,
   },
-  transactionRow: {
+  expenseRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
     borderBottomWidth: 1,
-    borderColor: '#f4f4f4',
+    borderBottomColor: '#f1f1f1',
   },
-  emoji: {
+  expenseIcon: {
     fontSize: 28,
-    marginRight: 16,
+    marginRight: 18,
   },
-  transactionText: {
-    flex: 1,
-  },
-  transactionTitle: {
+  expenseCategory: {
+    fontFamily: 'Poppins_700Bold',
     fontSize: 17,
-    fontWeight: '600',
-    color: '#222',
+    color: '#232323',
     textTransform: 'lowercase',
   },
-  transactionSubtitle: {
+  expenseMerchant: {
+    fontFamily: 'Poppins_400Regular',
     fontSize: 13,
-    color: '#aaa',
-    marginTop: 2,
+    color: '#bdbdbd',
+    marginTop: -2,
     textTransform: 'lowercase',
   },
-  transactionAmount: {
+  expenseAmount: {
+    fontFamily: 'Poppins_700Bold',
     fontSize: 17,
-    fontWeight: '600',
-    color: '#111',
-    minWidth: 90,
-    textAlign: 'right',
+    color: '#232323',
+    marginLeft: 12,
   },
   bottomNav: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 70,
+    width: '90%',
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 12,
     borderTopWidth: 1,
-    borderColor: '#eee',
+    borderTopColor: '#f1f1f1',
     backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    zIndex: 10,
+    position: 'absolute',
+    bottom: 28, // Raised above the very bottom
+    left: '5%',
+    right: '5%',
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
   },
-  addButton: {
+  plusButton: {
+    backgroundColor: '#232323',
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#111',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -30,
+    marginTop: -32,
     shadowColor: '#000',
-    shadowOpacity: 0.09,
-    shadowRadius: 8,
+    shadowOpacity: 0.11,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    shadowRadius: 8,
   },
 });
