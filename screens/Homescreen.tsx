@@ -4,6 +4,7 @@ import { useFonts, Poppins_700Bold, Poppins_400Regular } from '@expo-google-font
 import Svg, { Path, Circle } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Feather';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
 const months = [
   'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
@@ -60,6 +61,8 @@ export default function HomeScreen() {
   const [selectedMonth, setSelectedMonth] = useState(dropdownMonths[0]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const navigation = useNavigation();
+
   const [fontsLoaded] = useFonts({
     Poppins_700Bold,
     Poppins_400Regular,
@@ -104,7 +107,7 @@ export default function HomeScreen() {
       )}
 
       {/* Amount */}
-      <Text style={styles.amount}>$301.95</Text>
+      <Text style={styles.amount}>₹301.95</Text>
 
       {/* Graph */}
       <View style={styles.graphContainer}>
@@ -115,7 +118,6 @@ export default function HomeScreen() {
             strokeWidth="3"
             fill="none"
           />
-          {/* Highlight circle for current month */}
           <Circle cx="160" cy="60" r="13" fill="#fff" stroke="#232323" strokeWidth="3" />
         </Svg>
       </View>
@@ -144,7 +146,7 @@ export default function HomeScreen() {
           <>
             <View style={styles.expenseHeader}>
               <Text style={styles.expenseHeaderText}>today</Text>
-              <Text style={styles.expenseHeaderText}>-${308.89.toFixed(2)}</Text>
+              <Text style={styles.expenseHeaderText}>-₹{308.89.toFixed(2)}</Text>
             </View>
             <View style={styles.divider} />
           </>
@@ -156,7 +158,7 @@ export default function HomeScreen() {
               <Text style={styles.expenseCategory}>{item.category}</Text>
               <Text style={styles.expenseMerchant}>{item.merchant}</Text>
             </View>
-            <Text style={styles.expenseAmount}>-${item.amount.toFixed(2)}</Text>
+            <Text style={styles.expenseAmount}>-₹{item.amount.toFixed(2)}</Text>
           </View>
         )}
       />
@@ -165,9 +167,12 @@ export default function HomeScreen() {
       <View style={styles.bottomNav}>
         <Icon name="home" size={28} color="#232323" />
         <Icon name="shopping-bag" size={28} color="#232323" />
-        <View style={styles.plusButton}>
+        <TouchableOpacity
+          style={styles.plusButton}
+          onPress={() => navigation.navigate('Add')}
+          activeOpacity={0.85}>
           <Icon name="plus" size={30} color="#fff" />
-        </View>
+        </TouchableOpacity>
         <Icon name="bar-chart-2" size={28} color="#232323" />
         <Icon name="settings" size={28} color="#232323" />
       </View>
@@ -215,7 +220,6 @@ const styles = StyleSheet.create({
     textTransform: 'lowercase',
   },
   searchIcon: {
-    // No background, no border, just the icon
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 0,
@@ -333,7 +337,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#f1f1f1',
     backgroundColor: '#fff',
     position: 'absolute',
-    bottom: 28, // Raised above the very bottom
+    bottom: 28,
     left: '5%',
     right: '5%',
     borderRadius: 30,
