@@ -9,8 +9,12 @@ export default function BottomNav() {
 
   return (
     <View style={styles.bottomNav}>
-      <Icon name="home" size={28} color="#232323" />
-      <Icon name="shopping-bag" size={28} color="#232323" />
+      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <Icon name="home" size={28} color="#232323" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Categories')}>
+        <Icon name="shopping-bag" size={28} color="#232323" />
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.plusButton}
         onPress={() => navigation.navigate('Add')}

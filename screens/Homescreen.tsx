@@ -5,6 +5,7 @@ import Svg, { Path, Circle } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Feather';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import BottomNav from '../components/BottomNav';
 
 const months = [
   'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
@@ -164,18 +165,7 @@ export default function HomeScreen() {
       />
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <Icon name="home" size={28} color="#232323" />
-        <Icon name="shopping-bag" size={28} color="#232323" />
-        <TouchableOpacity
-          style={styles.plusButton}
-          onPress={() => navigation.navigate('Add')}
-          activeOpacity={0.85}>
-          <Icon name="plus" size={30} color="#fff" />
-        </TouchableOpacity>
-        <Icon name="bar-chart-2" size={28} color="#232323" />
-        <Icon name="settings" size={28} color="#232323" />
-      </View>
+      <BottomNav />
     </View>
   );
 }
