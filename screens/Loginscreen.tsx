@@ -75,7 +75,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', // Center everything vertically
+    justifyContent: 'center', 
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingHorizontal: 28,
